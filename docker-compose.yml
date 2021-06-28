@@ -1,0 +1,35 @@
+services:
+  graphql_client:
+    image: library/node:14.15.1
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+    working_dir: /code/examples
+    command: yarn start
+    depends_on:
+      - mockserver_gql_client
+      - mockserver_gql_client_auth
+
+  mockserver_gql_client:
+    image: library/node:14
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./examples:/code
+    working_dir: /code/api-mock-server
+    command: "node index.js"
+
+  mockserver_gql_client_auth:
+    image: library/node:14
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./examples:/code
+    working_dir: /code/auth-mock-server
+    command: "node index.js"
+
+version: '3.7'
+
+volumes:
+  code: {}
