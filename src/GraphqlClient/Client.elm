@@ -1,16 +1,16 @@
 module GraphqlClient.Client exposing
-    ( authenticationChanged
-    , manageUpdate
+    ( runQuery
     , runMutation
-    , runQuery
+    , authenticationChanged
+    , manageUpdate
     )
 
 {-| This is a Graphql client with automatic retry
 
+@docs runQuery
+@docs runMutation
 @docs authenticationChanged
 @docs manageUpdate
-@docs runMutation
-@docs runQuery
 
 -}
 
