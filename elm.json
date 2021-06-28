@@ -1,6 +1,6 @@
 {
     "type": "package",
-    "name": "primait/graphql-client",
+    "name": "primait/elm-graphql-client",
     "summary": "graphql client with automatic retry",
     "license": "MIT",
     "version": "1.0.0",
