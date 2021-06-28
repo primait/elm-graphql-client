@@ -21,11 +21,9 @@ import Graphql.Http
 import Graphql.Http.GraphqlError exposing (GraphqlError)
 import Graphql.Operation exposing (RootMutation, RootQuery)
 import Graphql.SelectionSet exposing (SelectionSet)
-import Json.Decode exposing (Decoder, at, bool, decodeValue)
-import List.Extra as LE
-import Maybe.Extra exposing (isJust)
 import GraphqlClient.Config as Config exposing (Config)
-import GraphqlClient.Utils exposing (flip)
+import GraphqlClient.Utils exposing (find, flip, isJust)
+import Json.Decode exposing (Decoder, at, bool, decodeValue)
 import RemoteData exposing (RemoteData)
 
 
@@ -82,7 +80,7 @@ defaultAuthenticationErrorIdentifier =
     List.foldl (\{ details } acc -> details :: acc) []
         >> List.filterMap (Dict.get "extensions")
         >> List.filterMap (Result.toMaybe << decodeValue errorDecoder)
-        >> LE.find identity
+        >> find identity
         >> isJust
 
 

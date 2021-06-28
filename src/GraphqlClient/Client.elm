@@ -29,11 +29,10 @@ type Attempt
     | Definitive
 
 
-{-| funzione che permette di eseguire una query graphql
-ritorna una tupla con il modello aggiornato del client (da inserire nel modello del chiamante) e il comando da eseguire.
-Il comando va ovviamente passato al runtime elm
+{-| Function that execute a Graphql query
+It return a tuple with the updated internal model (to be inserted in the caller model) and the Cmd to be executed.
 
-I parametri sono:
+The arguments are:
 
   - the query name
   - a list of headers (name: String, value: String)
@@ -46,11 +45,10 @@ runQuery name auth model =
     doRunQuery Transient auth model << M.Query name
 
 
-{-| funzione che permette di eseguire una mutation graphql
-ritorna una tupla con il modello aggiornato del client (da inserire nel modello del chiamante) e il comando da eseguire.
-Il comando va ovviamente passato al runtime elm
+{-| Function that execute a Graphql mutation
+It return a tuple with the updated internal model (to be inserted in the caller model) and the Cmd to be executed.
 
-I parametri sono:
+The arguments are:
 
   - the mutation name
   - a list of headers (name: String, value: String)
@@ -105,9 +103,10 @@ doRunQuery attempt auth model pipelineElement =
     )
 
 
-{-| funzione da chiamare quando il chiamante è riuscito a recuperare un nuovo token
-Questa funzione triggera l'esecuzione di tutte le query che erano fallite fino a questo punto ed erano rimaste in attesa di nuova autenticazione
-I parametri sono:
+{-| Function to call when the caller has finished its "job" and it's ready to perform the query/mutation again.
+If there were queries/mutations in pipeline, that were blocked by an authentication problem, they are all returned as a Cmd to be executed.
+
+The arguments are:
 
   - the component model
   - a list of headers (name: String, value: String)
@@ -138,11 +137,12 @@ authenticationChanged model auth mainModelUpdater mainModel =
         |> Tuple.mapSecond (Cmd.map (M.getMsgLifter model) << Cmd.batch)
 
 
-{-| HOF che permette il wiring di un componente GqlClient con il chiamante.
-Va messo nell'Update del chiamante dove si ricevono i messaggi del componente
-La sua funzione principale è quella di evitare che il chiamante debba ricordare tutti i dettagli implementativi di integrazione, con il rischio di dimenticarsi dei pezzi
+{-| This is a function that simplifies the wiring between the caller and the graphql client component.
+It should be put inside the caller Update cycle.
+The main purpose is to make it easier for the caller to remember how the integration should be done, by passing arguments to this function.
+It is not mandatory for this reason, but highly recommended.
 
-I parametri sono:
+The arguments are:
 
   - the component message
   - the component model
