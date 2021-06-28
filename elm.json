@@ -3,7 +3,7 @@
     "name": "primait/elm-graphql-client",
     "summary": "graphql client with automatic retry",
     "license": "MIT",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "exposed-modules": [
         "GraphqlClient.Client"
     ],
