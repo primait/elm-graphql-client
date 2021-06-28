@@ -1,4 +1,18 @@
-module GraphqlClient.Client exposing (authenticationChanged, manageUpdate, runMutation, runQuery)
+module GraphqlClient.Client exposing
+    ( authenticationChanged
+    , manageUpdate
+    , runMutation
+    , runQuery
+    )
+
+{-| This is a Graphql client with automatic retry
+
+@docs authenticationChanged
+@docs manageUpdate
+@docs runMutation
+@docs runQuery
+
+-}
 
 import Graphql.Http
 import Graphql.Operation exposing (RootMutation, RootQuery)
