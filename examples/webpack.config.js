@@ -46,7 +46,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: "todolist.bundle.[hash].js",
+        filename: "graphql_client.bundle.[hash].js",
         publicPath: "/"
     },
     devServer: {

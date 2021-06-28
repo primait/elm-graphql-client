@@ -4,10 +4,11 @@ import Api
 import Auth
 import Browser exposing (Document)
 import Graphql.Http
-import Html exposing (Html, button, div, hr, text)
+import GraphqlClient.Client as GqlClient
+import Html exposing (Html, button, div, h1, hr, p, text)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
 import Model as M exposing (Flags, Model, Msg(..), QueryResult(..), initialModel)
-import PrimaElm.Lib.GqlClient.GqlClient as GqlClient
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -105,15 +106,21 @@ mapResult default func res =
 
 view : Model -> Document Msg
 view model =
-    { title = "PrimaElm - GraphQL Client"
+    { title = "GraphQL Client"
     , body =
         [ if model.active then
             div
-                []
-                [ button [ onClick DoQuery ] [ text "execute query" ]
-                , button [ onClick DoQueryWithNum ] [ text "execute query with num" ]
-                , button [ onClick DoMutationNewNumber ] [ text "execute mutation new number" ]
-                , button [ onClick GenerateNewToken ] [ text "generate new token" ]
+                [ class "container" ]
+                [ h1 [] [ text "Elm Graphql Client" ]
+                , div [ class "row" ]
+                    [ div [ class "col" ] [ p [ class "lead" ] [ text "Graphql client with automatic retry" ] ]
+                    ]
+                , div [ class "row" ]
+                    [ div [ class "col" ] [ button [ class "btn btn-primary", onClick DoQuery ] [ text "execute query" ] ]
+                    , div [ class "col" ] [ button [ class "btn btn-primary", onClick DoQueryWithNum ] [ text "execute query with number" ] ]
+                    , div [ class "col" ] [ button [ class "btn btn-danger", onClick DoMutationNewNumber ] [ text "mutation to change the number" ] ]
+                    , div [ class "col" ] [ button [ class "btn btn-danger", onClick GenerateNewToken ] [ text "invalidate the token" ] ]
+                    ]
                 , hr [] []
                 , case model.result of
                     M.Loading ->
@@ -121,21 +128,21 @@ view model =
 
                     _ ->
                         text ""
-                , div []
+                , div [ class "bg-light" ]
                     [ model.result
                         |> mapResult
                             ""
                             (\res ->
                                 case res of
                                     Hello { message } ->
-                                        message
+                                        "Received: " ++ message
 
                                     HelloWithNum { message } ->
-                                        message
+                                        "Received: " ++ message
                             )
                         |> text
                     ]
-                , div []
+                , div [ class "bg-light" ]
                     [ model.result
                         |> mapResult
                             Nothing
@@ -148,6 +155,7 @@ view model =
                                         Just num
                             )
                         |> Maybe.map String.fromInt
+                        |> Maybe.map ((++) "with number: ")
                         |> Maybe.withDefault ""
                         |> text
                     ]

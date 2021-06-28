@@ -2,7 +2,7 @@ module Model exposing (..)
 
 import Api
 import Graphql.Http
-import PrimaElm.Lib.GqlClient.Model as GqlClientModel
+import GraphqlClient.Model as GqlClientModel
 
 
 type alias Model =
