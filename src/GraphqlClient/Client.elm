@@ -35,10 +35,10 @@ Il comando va ovviamente passato al runtime elm
 
 I parametri sono:
 
-  - il nome della query
-  - una lista di header di autenticazione (name: String, value: String)
-  - il modello del componente
-  - il selection set della query da eseguire
+  - the query name
+  - a list of headers (name: String, value: String)
+  - the component model
+  - the selection set of the query that will be executed
 
 -}
 runQuery : name -> List Authentication -> Model name decodesTo msg -> SelectionSet decodesTo RootQuery -> ( Model name decodesTo msg, Cmd (Msg name decodesTo) )
@@ -52,10 +52,10 @@ Il comando va ovviamente passato al runtime elm
 
 I parametri sono:
 
-  - il nome della mutation
-  - una lista di header di autenticazione (name: String, value: String)
-  - il modello del componente
-  - il selection set della query da eseguire
+  - the mutation name
+  - a list of headers (name: String, value: String)
+  - the component model
+  - the selection set of the query that will be executed
 
 -}
 runMutation : name -> List Authentication -> Model name decodesTo msg -> SelectionSet decodesTo RootMutation -> ( Model name decodesTo msg, Cmd (Msg name decodesTo) )
@@ -109,10 +109,10 @@ doRunQuery attempt auth model pipelineElement =
 Questa funzione triggera l'esecuzione di tutte le query che erano fallite fino a questo punto ed erano rimaste in attesa di nuova autenticazione
 I parametri sono:
 
-  - il modello del componente
-  - una lista di Authentication, tuple di (header name, header value) espressi tutti e due come String
-  - una closure per aggiornare il modello del chiamante con il modello del componente. tipo (\\gqlClientModel -> {model | gqlClientModel = gqlClientModel})
-  - il modello del chiamante
+  - the component model
+  - a list of headers (name: String, value: String)
+  - a closure to updater the caller model with the component model. Something like (\\gqlClientModel -> {model | gqlClientModel = gqlClientModel})
+  - the caller model
 
 -}
 authenticationChanged :
@@ -144,13 +144,13 @@ La sua funzione principale è quella di evitare che il chiamante debba ricordare
 
 I parametri sono:
 
-  - il messaggio del componente
-  - il modello del componente
-  - il Cmd Msg del chiamante per ottenere un nuovo token
-  - una closure per gestire il risultato di una query andata a buon fine. La closure accetta il modello del chiamante e il tipo di risposta della query eseguita (decodesTo)
-  - una closure per gestire il risultato di una query andata in errore. La closure accetta il modello del chiamante e un Graphql.Http.Error
-  - una closure per aggiornare il modello del chiamante con il modello del componente. tipo (\\gqlClientModel -> {model | gqlClientModel = gqlClientModel})
-  - il modello del chiamante
+  - the component message
+  - the component model
+  - the caller Cmd Msg to get a new header
+  - a closure to handle the result of an OK query. The closure should accept the caller model and a decoder for the response
+  - a closure to handle the result of an Error query. The closure should accept the caller model and a Graphql.Http.Error
+  - a closure to updater the caller model with the component model. Something like (\\gqlClientModel -> {model | gqlClientModel = gqlClientModel})
+  - the caller model
 
 -}
 manageUpdate :
