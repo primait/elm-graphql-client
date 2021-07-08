@@ -1,5 +1,7 @@
 module GraphqlClient.Model exposing
-    ( Authentication
+    ( resetPipeline
+    , removeQueryFromPipeline
+    , Authentication
     , Model
     , Msg(..)
     , PipelineElement(..)
@@ -11,10 +13,26 @@ module GraphqlClient.Model exposing
     , getPipelineElementName
     , getUrl
     , initialize
-    , removeQueryFromPipeline
-    , resetPipelines
-    , withAuthenticationErrorIdentifier
     )
+
+{-| The Model
+
+@docs resetPipeline
+@docs removeQueryFromPipeline
+@docs Authentication
+@docs Model
+@docs Msg
+@docs PipelineElement
+@docs QueryId
+@docs addElementToPipeline
+@docs getAuthenticationErrorIdentifier
+@docs getElementsInPipeline
+@docs getMsgLifter
+@docs getPipelineElementName
+@docs getUrl
+@docs initialize
+
+-}
 
 import Dict
 import Graphql.Http
@@ -27,27 +45,39 @@ import Json.Decode exposing (Decoder, at, bool, decodeValue)
 import RemoteData exposing (RemoteData)
 
 
+{-| Header name
+-}
 type alias HeaderName =
     String
 
 
+{-| Header value
+-}
 type alias HeaderValue =
     String
 
 
+{-| Represent an authentication header
+-}
 type alias Authentication =
     ( HeaderName, HeaderValue )
 
 
+{-| Query id
+-}
 type alias QueryId =
     Int
 
 
+{-| A pipeline element
+-}
 type PipelineElement name decodesTo
     = Query name (SelectionSet decodesTo RootQuery)
     | Mutation name (SelectionSet decodesTo RootMutation)
 
 
+{-| The component model
+-}
 type Model name decodesTo msg
     = Model
         { config : Config
@@ -57,6 +87,8 @@ type Model name decodesTo msg
         }
 
 
+{-| Initialize the model
+-}
 initialize : String -> (Msg name decodesTo -> msg) -> Model name decodesTo msg
 initialize url msgLifter =
     Model
@@ -84,36 +116,50 @@ defaultAuthenticationErrorIdentifier =
         >> isJust
 
 
+{-| The Msg
+-}
 type Msg name decodesTo
     = FirstAttemptFinished QueryId name (RemoteData (Graphql.Http.Error decodesTo) decodesTo)
     | SecondAttemptFinished QueryId name (RemoteData (Graphql.Http.Error decodesTo) decodesTo)
 
 
+{-| Gets the config
+-}
 getConfig : Model name decodesTo msg -> Config
 getConfig (Model { config }) =
     config
 
 
+{-| Gets the client url
+-}
 getUrl : Model name decodesTo msg -> String
 getUrl =
     Config.getUrl << getConfig
 
 
+{-| Gets pipeline elements
+-}
 getElementsInPipeline : Model name decodesTo msg -> List ( QueryId, PipelineElement name decodesTo )
 getElementsInPipeline (Model { pipeline }) =
     pipeline
 
 
-resetPipelines : Model name decodesTo msg -> Model name decodesTo msg
-resetPipelines (Model modelData) =
+{-| Resets the requests pipeline
+-}
+resetPipeline : Model name decodesTo msg -> Model name decodesTo msg
+resetPipeline (Model modelData) =
     Model { modelData | pipeline = [] }
 
 
+{-| Replace the existing pipeline with a new one
+-}
 setElementsInPipeline : List ( QueryId, PipelineElement name decodesTo ) -> Model name decodesTo msg -> Model name decodesTo msg
 setElementsInPipeline pipeline (Model modelData) =
     Model { modelData | pipeline = pipeline }
 
 
+{-| Removes a query from the pipeline
+-}
 removeQueryFromPipeline : QueryId -> Model name decodesTo msg -> Model name decodesTo msg
 removeQueryFromPipeline queryId ((Model { pipeline }) as model) =
     pipeline
@@ -121,26 +167,29 @@ removeQueryFromPipeline queryId ((Model { pipeline }) as model) =
         |> flip setElementsInPipeline model
 
 
+{-| Adds an element to the current pipeline
+-}
 addElementToPipeline : ( QueryId, PipelineElement name decodesTo ) -> Model name decodesTo msg -> Model name decodesTo msg
 addElementToPipeline query ((Model modelData) as model) =
     Model { modelData | pipeline = query :: getElementsInPipeline model }
 
 
+{-| Gets the message lifter
+-}
 getMsgLifter : Model name decodesTo msg -> (Msg name decodesTo -> msg)
 getMsgLifter (Model { msgLifter }) =
     msgLifter
 
 
+{-| Gets the error identifier
+-}
 getAuthenticationErrorIdentifier : Model name decodesTo msg -> (List GraphqlError -> Bool)
 getAuthenticationErrorIdentifier (Model { authenticationErrorIdentifier }) =
     authenticationErrorIdentifier
 
 
-withAuthenticationErrorIdentifier : (List GraphqlError -> Bool) -> Model name decodesTo msg -> Model name decodesTo msg
-withAuthenticationErrorIdentifier authenticationErrorIdentifier (Model modelData) =
-    Model { modelData | authenticationErrorIdentifier = authenticationErrorIdentifier }
-
-
+{-| Gets the name of a pipeline element
+-}
 getPipelineElementName : PipelineElement name decodesTo -> name
 getPipelineElementName pipelineElement =
     case pipelineElement of

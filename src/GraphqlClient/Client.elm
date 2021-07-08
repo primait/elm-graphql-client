@@ -133,7 +133,7 @@ authenticationChanged model auth mainModelUpdater mainModel =
     in
     queries
         |> List.foldl queryFold ( model, [] )
-        |> Tuple.mapFirst (flip mainModelUpdater mainModel << M.resetPipelines)
+        |> Tuple.mapFirst (flip mainModelUpdater mainModel << M.resetPipeline)
         |> Tuple.mapSecond (Cmd.map (M.getMsgLifter model) << Cmd.batch)
 
 

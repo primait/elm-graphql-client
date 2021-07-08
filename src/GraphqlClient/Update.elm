@@ -1,11 +1,19 @@
 module GraphqlClient.Update exposing (update)
 
+{-| Component update
+
+@docs update
+
+-}
+
 import Graphql.Http exposing (HttpError(..), RawError(..))
 import GraphqlClient.Model as M exposing (Model, Msg(..))
 import GraphqlClient.Response exposing (Response(..))
 import RemoteData as RD
 
 
+{-| Run the update for the component
+-}
 update :
     Msg name decodesTo
     -> Model name decodesTo msg
