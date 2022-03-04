@@ -158,7 +158,7 @@ manageUpdate :
     -> Model name decodesTo msg
     -> Cmd msg
     -> (model -> name -> decodesTo -> ( model, Cmd msg ))
-    -> (model -> name -> Graphql.Http.Error decodesTo -> model)
+    -> (model -> name -> Graphql.Http.Error decodesTo -> (model, Cmd msg)
     -> (Model name decodesTo msg -> model -> model)
     -> model
     -> ( model, Cmd msg )
@@ -181,7 +181,7 @@ manageUpdate msg model tokenUpdater queryResultHandler queryErrorHandler mainMod
                     ( mainModel, Cmd.none )
 
                 Response.DefinitiveError name error ->
-                    ( queryErrorHandler mainModel name error, Cmd.none )
+                    queryErrorHandler mainModel name error
 
         command : Cmd msg
         command =
