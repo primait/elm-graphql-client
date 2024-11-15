@@ -1,0 +1,8 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "examples/yarn.lock"
+    ignore:
+      - dependency-name: "*"
+    schedule:
+      interval: "weekly"
